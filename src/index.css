@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
 body{
-    background-color: yellow;
+    background-color: black;
 }
+
+
+@layer utilities {
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+}
+
+
+@media (min-width: 2000px) {
+  .grid-cols-4k {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+    width: auto; /* no fixed height here */
+    margin: 0 auto; /* center the grid */
+  }
+  .px-4-4k {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  /* Card height for 4K */
+  .video-card-4k {
+    height: 500px; /* bigger cards for 4K */
+  }
+}
+

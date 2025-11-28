@@ -12,28 +12,41 @@ export class AuthService {
     this.account = new Account(this.client);
   }
 
+  // Create Account + Auto Login (safe from duplicate session issue)
   async createAccount({ email, password, name }) {
     try {
-      const userAccount = await this.account.create(
-        ID.unique(),
-        email,
-        password,
-        name
-      );
-      if (userAccount) {
-        // call another method
-        return this.login({ email, password });
-      } else {
-        return userAccount;
-      }
+      // Create new account
+      await this.account.create(ID.unique(), email, password, name);
+
+      // Delete any existing session (prevents duplicate-session error)
+      await this.account.deleteSession("current").catch(() => {});
+
+      // Create new session (auto login)
+      const session = await this.login({ email, password });
+
+      // Return current logged-in user
+      const currentUser = await this.account.get();
+      return currentUser;
     } catch (error) {
+      console.error("Appwrite :: createAccount ::", error);
       throw error;
     }
   }
+
   async login({ email, password }) {
     try {
-      return await this.account.createEmailPasswordSession(email, password);
+      // Delete any existing session (safe)
+      await this.account.deleteSession("current").catch(() => {});
+
+      // Create new session
+      const session = await this.account.createEmailPasswordSession(
+        email,
+        password
+      );
+      console.log("Login session:", session); // Debug: check session returned
+      return session;
     } catch (error) {
+      console.error("Login failed:", error); // Debug: log any error
       throw error;
     }
   }
@@ -41,30 +54,30 @@ export class AuthService {
   async getCurrentUser() {
     try {
       return await this.account.get();
-    } catch (error) {
-      console.log("Appwrite serive :: getCurrentUser :: error", error);
+    } catch {
+      return null;
     }
-
-    return null;
   }
 
   async logout() {
     try {
-      await this.account.deleteSessions();
+      await this.account.deleteSession("current");
     } catch (error) {
-      console.log("Appwrite serive :: logout :: error", error);
+      console.error("Appwrite :: logout ::", error);
     }
   }
 
-  async deleteCurrentSession() {
+  async deleteAccount() {
     try {
-      return await this.account.deleteSession("current");
+      await this.account.delete();
+      console.log("✅ Account deleted successfully.");
+      return true;
     } catch (error) {
-      console.log("No active session to delete:", error);
+      console.error("Appwrite :: deleteAccount ::", error);
+      return false;
     }
   }
 }
 
 const authService = new AuthService();
-
 export default authService;

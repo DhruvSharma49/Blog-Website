@@ -1,181 +1,84 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { login as authLogin } from "../Store/authSlice";
-import { Button, Input, Logo } from "./index";
-import { useDispatch } from "react-redux";
-import authService from "../Appwrite/auth";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login as authLogin } from "../Store/authSlice";
+import authService from "../Appwrite/auth";
+import { Button, Input, Logo } from "./index";
+import appwriteService from "../Appwrite/config";
 
-function Login({setShowSignup}) {
+function Login({ setShowSignup }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
-const login = async (data) => {
-  setError("");
-  try {
-    // 1️⃣ Current active session delete karo
-    try {
-      await authService.deleteCurrentSession(); // hum ye method banaenge
-    } catch (err) {
-      console.log("No active session:", err);
-    }
 
-    // 2️⃣ Nayi session create karo
-    const session = await authService.login(data);
-    if (session) {
-      const userData = await authService.getCurrentUser();
-      if (userData) dispatch(authLogin(userData));
+  const handleLogin = async (data) => {
+    setError("");
+    try {
+      const session = await authService.login(data);
+      console.log("Session created:", session);
+
+      // Wait a bit to ensure session is registered
+      const currentUser = await authService.getCurrentUser();
+      if (!currentUser) {
+        setError("Failed to fetch user details. Try again.");
+        return;
+      }
+
+      const userDoc = await appwriteService.getUserByAccountId(currentUser.$id);
+      if (userDoc) dispatch(authLogin(userDoc));
+
       navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || "Login failed");
     }
-  } catch (error) {
-    setError(error.message);
-  }
-};
+  };
 
   return (
-    <div className="flex items-center justify-center w-full">
-      <div
-        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
-      >
-        <div className="mb-2 flex justify-center">
-          <span className="inline-block w-full max-w-[100px]">
-            <Logo width="100%" />
-          </span>
-        </div>
-        <h2 className="text-center text-2xl font-bold leading-tight">
-          Sign in to your account
-        </h2>
-      <p className="mt-2 text-center text-base text-black/60">
-  Don&apos;t have any account?&nbsp;
-  <button
-    type="button"
-    onClick={() => setShowSignup(true)}
-    className="font-medium text-primary transition-all duration-200 hover:underline"
-  >
-    Sign Up
-  </button>
-</p>
+    <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl p-12 flex flex-col items-center w-full max-w-lg transition-transform duration-300 hover:scale-[1.03]">
+      <Logo width="80px" />
+      <h2 className="mt-6 text-3xl font-bold text-white text-center drop-shadow-lg">
+        Sign In
+      </h2>
+      <p className="mt-2 text-white/70 text-center">
+        Don’t have an account?{" "}
+        <button
+          onClick={() => setShowSignup(true)}
+          className="text-pink-400 hover:underline font-semibold"
+        >
+          Sign Up
+        </button>
+      </p>
 
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-        <form onSubmit={handleSubmit(login)} className="mt-8">
-          <div className="space-y-5">
-           <Input
-              label="Email: "
-              placeholder="Enter your email"
-              type="email"
-              {...register("email", {
-                required: true,
-                validate: {
-                  matchPatern: (value) =>
-                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                    "Email address must be a valid address",
-                },
-              })}
-            />
-            <Input
-              label="Password: "
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: true,
-              })}
-            />
-            <Button type="submit" className="w-full">
-              Sign in
-            </Button>
-          </div>
-        </form>
-      </div>
+      {error && <p className="text-red-400 mt-4">{error}</p>}
+
+      <form
+        onSubmit={handleSubmit(handleLogin)}
+        className="w-full mt-6 space-y-6 text-white"
+      >
+        <Input
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          {...register("email", {
+            required: true,
+            pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+          })}
+        />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          {...register("password", { required: true })}
+        />
+        <Button className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:scale-105 hover:shadow-xl text-white font-bold transition-all duration-300">
+          Sign In
+        </Button>
+      </form>
     </div>
   );
 }
 
 export default Login;
-
-
-
-
-// import React, {useState} from 'react'
-// import {Link, useNavigate} from 'react-router-dom'
-// import { login as authLogin } from '../Store/authSlice'
-// import {Button, Input, Logo} from "./index"
-// import {useDispatch} from "react-redux"
-// import authService from "../Appwrite/auth"
-// import {useForm} from "react-hook-form"
-
-// function Login() {
-//     const navigate = useNavigate()
-//     const dispatch = useDispatch()
-//     const {register, handleSubmit} = useForm()
-//     const [error, setError] = useState("")
-
-//     const login = async(data) => {
-//         setError("")
-//         try {
-//             const session = await authService.login(data)
-//             if (session) {
-//                 const userData = await authService.getCurrentUser()
-//                 if(userData) dispatch(authLogin(userData));
-//                 navigate("/")
-//             }
-//         } catch (error) {
-//             setError(error.message)
-//         }
-//     }
-
-//   return (
-//     <div
-//     className='flex items-center justify-center w-full'
-//     >
-//         <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-//         <div className="mb-2 flex justify-center">
-//                     <span className="inline-block w-full max-w-[100px]">
-//                         <Logo width="100%" />
-//                     </span>
-//         </div>
-//         <h2 className="text-center text-2xl font-bold leading-tight">Sign in to your account</h2>
-//         <p className="mt-2 text-center text-base text-black/60">
-//                     Don&apos;t have any account?&nbsp;
-//                     <Link
-//                         to="/signup"
-//                         className="font-medium text-primary transition-all duration-200 hover:underline"
-//                     >
-//                         Sign Up
-//                     </Link>
-//         </p>
-//         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-//         <form onSubmit={handleSubmit(login)} className='mt-8'>
-//             <div className='space-y-5'>
-//                 <Input
-//                 label="Email: "
-//                 placeholder="Enter your email"
-//                 type="email"
-//                 {...register("email", {
-//                     required: true,
-//                     validate: {
-//                         matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-//                         "Email address must be a valid address",
-//                     }
-//                 })}
-//                 />
-//                 <Input
-//                 label="Password: "
-//                 type="password"
-//                 placeholder="Enter your password"
-//                 {...register("password", {
-//                     required: true,
-//                 })}
-//                 />
-//                 <Button
-//                 type="submit"
-//                 className="w-full"
-//                 >Sign in</Button>
-//             </div>
-//         </form>
-//         </div>
-//     </div>
-//   )
-// }
-
-// export default Login

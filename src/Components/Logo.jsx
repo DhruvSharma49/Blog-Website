@@ -5,8 +5,12 @@ function Logo({width='100px'}) {
   return (
     <div>
 
-      {/* //  <img src={Brand}/> */}
-      Logo
+         <img 
+        src={Brand} 
+        alt="Logo" 
+        style={{ width: width, height: 'auto' }} 
+      />
+
     </div>
 
   )
