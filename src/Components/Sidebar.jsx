@@ -80,6 +80,9 @@ export default function Sidebar({ isOpen, onClose }) {
                   Quick links
                 </h3>
                 <div className="flex flex-col gap-2 mt-2">
+                  <Link to="/home" onClick={onClose} className="hover:underline">
+                  Home
+                  </Link>
                   <Link to="/profile/edit" onClick={onClose} className="hover:underline">
                   Edit Profile
                   </Link>
@@ -103,7 +106,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
             <div className="mt-8 text-xs">
               <p className="font-semibold text-gray-900">Signed in as</p>
-              <p className="mt-1 font-medium text-amber-800">
+              <p className="mt-1 font-medium text-red-950">
                 {LoogedInUserName?.name || LoogedInUserName?.email || "Unknown User"}
               </p>
             </div>
