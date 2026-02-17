@@ -1,80 +1,3 @@
-// import React from "react";
-// import ReactDOM from "react-dom/client";
-// import App from "./App.jsx";
-// import "./index.css";
-// import { Provider } from "react-redux";
-// import { store } from "./Store/store.js";
-// import { RouterProvider, createBrowserRouter } from "react-router-dom";
-// import { AuthLayout, AuthPage } from "./Components/index.js";
-// import AddPost from "./Pages/AddPost.jsx";
-// import EditPost from "./Pages/EditPost.jsx";
-// import Post from "./Pages/Posts.jsx";
-// import AllPosts from "./Pages/AllPosts.jsx";
-// import Home from "./Pages/Home.jsx";
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: (
-//       <AuthLayout authentication={false}>
-//         {" "}
-//         <AuthPage />{" "}
-//       </AuthLayout>
-//     ),
-//   },
-//   {
-//     path: "/app",
-//     element: <App />,
-//     children: [
-//       {
-//         path: "home",
-//         element: (
-//           <AuthLayout authentication>
-//             {" "}
-//             <Home />{" "}
-//           </AuthLayout>
-//         ),
-//       },
-//       {
-//         path: "all-posts",
-//         element: (
-//           <AuthLayout authentication>
-//             {" "}
-//             <AllPosts />{" "}
-//           </AuthLayout>
-//         ),
-//       },
-//       {
-//         path: "add-post",
-//         element: (
-//           <AuthLayout authentication>
-//             {" "}
-//             <AddPost />{" "}
-//           </AuthLayout>
-//         ),
-//       },
-//       {
-//         path: "edit-post/:slug",
-//         element: (
-//           <AuthLayout authentication>
-//             {" "}
-//             <EditPost />{" "}
-//           </AuthLayout>
-//         ),
-//       },
-//       { path: "post/:slug", element: <Post /> },
-//     ],
-//   },
-// ]);
-// ReactDOM.createRoot(document.getElementById("root")).render(
-//   <React.StrictMode>
-//     {" "}
-//     <Provider store={store}>
-//       {" "}
-//       <RouterProvider router={router} />{" "}
-//     </Provider>{" "}
-//   </React.StrictMode>
-// );
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -100,7 +23,6 @@ import Terms from "./Pages/FooterPages/Terms.jsx";
 import AffiliateProgram from "./Pages/FooterPages/AffiliateProgram.jsx";
 import CustomerSupport from "./Pages/FooterPages/CustomerSupport.jsx";
 import Privacy from "./Pages/FooterPages/Privacy.jsx";
-
 
 const router = createBrowserRouter([
   {
@@ -159,7 +81,7 @@ const router = createBrowserRouter([
       {
         path: "/profile/edit",
         element: (
-          <AuthLayout authentication>                    
+          <AuthLayout authentication>
             <EditProfilePage />
           </AuthLayout>
         ),
@@ -261,29 +183,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
-  // </React.StrictMode>
+  </React.StrictMode>,
 );
-
-
-
-  // const footerLinks = {
-  //   company: [
-  //     { name: "Features", slug: "/features" },
-  //     { name: "Pricing", slug: "/pricing" },
-  //     { name: "Affiliate Program", slug: "/affiliate" },
-  //     { name: "Press Kit", slug: "/press" },
-  //   ],
-  //   support: [
-  //     { name: "Account Setting", slug: "/accountsetting" },
-  //     { name: "Help", slug: "/help" },
-  //     { name: "Contact Us", slug: "/contact" },
-  //     { name: "Customer Support", slug: "/support" },
-  //   ],
-  //   legals: [
-  //     { name: "Terms & Conditions", slug: "/terms" },
-  //     { name: "Privacy Policy", slug: "/privacy" },
-  //     { name: "Licensing", slug: "/license" },
