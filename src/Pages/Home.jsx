@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import appwriteService from "../Appwrite/config";
 import { Container, PostCard } from "../Components";
-import NoSignal from "../assets/NoSignal.svg";
+import NoPostYet from "../assets/NoPostYet.svg";
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -48,7 +48,7 @@ function Home() {
         ) : posts.length === 0 ? (
           <div className="text-center py-10">
             <img
-              src={NoSignal}
+              src={NoPostYet}
               alt="No posts yet"
               className="w-80 mx-auto object-contain"
             />
